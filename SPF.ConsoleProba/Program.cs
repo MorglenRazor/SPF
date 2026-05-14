@@ -1,24 +1,24 @@
 ﻿// Путь к файлу со списком модов
+using SPF.Application;
+using SPF.Infrastructure;
+
 string pathToModList = "../OuterFile/mods.csv";
+// 1. Настройка (Dependency Injection на минималках)
+// Мы создаем конкретный объект из слоя Инфраструктуры, но общаться с ним будем через Интерфейс
+// Было: IModRepository repository = new FakeModRepository();
+IModRepository repository = new CsvModRepository(pathToModList);
 
-// Создаем объект FileInfo для получения информации о файле
-FileInfo fileInf = new FileInfo(pathToModList);
+// 2. Выполнение бизнес-логики
+// Просим репозиторий отдать нам моды. Консоль не знает, откуда они берутся (из файла, сети или заглушки).
+var mods = repository.GetAllMods();
 
-// Проверяем, существует ли файл по указанному пути
-if (fileInf.Exists)
+// 3. Вывод результата (Презентация)
+Console.WriteLine("=== Найденные моды ===");
+foreach (var mod in mods)
 {
-    Console.WriteLine("File content:");
-    // Читаем все строки из файла в массив строк
-    string[] lines = File.ReadAllLines(pathToModList);
-    
-    // Перебираем каждую строку в массиве и выводим её в консоль
-    foreach (var line in lines)
-    {
-        Console.WriteLine(line);
-    }
+    Console.WriteLine($"- {mod.NameMod}");
 }
-else
-{
-    // Выводим сообщение, если файл не найден
-    Console.WriteLine("File not found.");
-}
+Console.WriteLine("======================");
+
+Console.WriteLine("\nНажми любую клавишу для выхода...");
+Console.ReadKey();
