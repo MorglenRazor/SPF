@@ -12,11 +12,15 @@ IModRepository repository = new CsvModRepository(pathToModList);
 // Просим репозиторий отдать нам моды. Консоль не знает, откуда они берутся (из файла, сети или заглушки).
 var mods = repository.GetAllMods();
 
-// 3. Вывод результата (Презентация)
+Console.WriteLine("=== Начинаем сетевой поиск модов ===");
+
+// 3. Проходимся по списку и стучимся в сеть для каждого мода
 Console.WriteLine("=== Найденные моды ===");
 foreach (var mod in mods)
 {
-    Console.WriteLine($"- {mod.NameMod}");
+    Console.WriteLine($"Ищем мод: {mod.NameMod}");
+    string result = await new NexusScraper().CheckModInNetworkAsync(mod);
+    Console.WriteLine(result);
 }
 Console.WriteLine("======================");
 
